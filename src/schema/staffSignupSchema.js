@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    studentEmail: {
+    email: {
         type: String,
         require: true,
         unique: true,
@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         require: true,
-    },
+    }, 
     dateCreated: {
         type: String,
         require: true,
@@ -26,6 +26,6 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-const UserStudent = mongoose.model("users-student", userSchema);
+const UserStaff = mongoose.model("users-staff", userSchema);
 
-module.exports = UserStudent;
+module.exports = UserStaff;
