@@ -1,4 +1,3 @@
-const express = require("express")
 const { Router } = require("express");
 const User = require("../schema/signupSchema");
 const router = Router()
