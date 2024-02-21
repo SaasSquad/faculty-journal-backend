@@ -1,7 +1,22 @@
 const express = require("express");
+const mongoose = require("mongoose")
+require("dotenv").config();
 const app = express();
-const mongoose = require('mongoose');
+require("./config")
+const signupRoute = require("./routes/studentSignup")
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3000;
 
-console.log(`app run on port ${PORT} `);
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
+
+app.listen(PORT, () => {
+    console.log(`app is running on PORT : ${PORT}`)
+});
+
+app.use("/api", signupRoute)
+
+
+
+
+
