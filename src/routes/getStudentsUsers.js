@@ -4,7 +4,7 @@ const studentUsers = require("../schema/signupSchema");
 
 router.get("/students", async ( req, res) => {
     try {
-        const Users = await studentUsers.find();
+        const Users = await studentUsers.find({}, "username fullName studentEmail dateCreated");
         res.json(Users);
     } catch(err) {
         res.sendStatus(401);

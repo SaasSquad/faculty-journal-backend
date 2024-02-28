@@ -4,7 +4,7 @@ const staffUsers = require("../schema/staffSignupSchema");
 
 router.get("/staffs", async (req, res) => {
     try {
-        const Users = await staffUsers.find();
+        const Users = await staffUsers.find({}, "username fullName email dateCreated");
         res.json(Users);
     } catch (err) {
         res.sendStatus(400);
