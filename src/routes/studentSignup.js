@@ -5,9 +5,12 @@ const { hashPassword } = require("../middleware/hashPassword");
 
 
 router.post("/signup/student", async (req, res) => {
-    const password = hashPassword(req.body.password);
-    const { username, fullName, studentEmail, dateCreated } = req.body;
-    const newUser = await UserStudent.create({ username, fullName, studentEmail, password, dateCreated });
+    if(req.body.password === !req.body.comfirmPassword) {
+        return res.sendStatus(403)
+    }
+    const password = hashPassword(req.body.password)
+    const { firstName, lastName, studentEmail, dateCreated } = req.body;
+    const newUser = await UserStudent.create({ firstName, lastName, studentEmail, password, dateCreated });
     newUser.save();
 });
 
