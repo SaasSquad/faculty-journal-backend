@@ -10,10 +10,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    studentEmail: {
+    email: {
         type: String,
         require: true,
         unique: true,
+    },
+    role: {
+        type : String,
     },
     password: {
         type: String,
@@ -30,6 +33,6 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-const UserStudent = mongoose.model("users-student", userSchema);
+const User = mongoose.model("users", userSchema);
 
-module.exports = UserStudent;
+module.exports = User;

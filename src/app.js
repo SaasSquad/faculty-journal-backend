@@ -3,13 +3,10 @@ const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const app = express();
 require("./config");
-const signupRoute = require("./routes/studentSignup");
-const staffSignupRoute = require("./routes/staffSignup");
-const studentLogin = require("./routes/studentLogin");
-const staffLogin = require("./routes/staffLogin");
+const signup = require("./routes/signup");
+const login = require("./routes/userlogin");
 const bodyParser = require('body-parser');
-const studentUsers = require("./routes/getStudentsUsers");
-const staffUsers = require("./routes/getStaffUsers");
+const Users = require("./routes/getUsers");
 const signOut = require("./routes/signout");
 const routeAuth = require("./middleware/jwtAuth")
 
@@ -25,17 +22,11 @@ app.listen(PORT, () => {
     console.log(`app is running on PORT : ${PORT}`)
 });
 
-app.use("", signupRoute);
+app.use("", signup);
 
-app.use("", staffSignupRoute);
+app.use("", login);
 
-app.use("", studentLogin);
-
-app.use("", staffLogin);
-
-app.use("", routeAuth, studentUsers);
-
-app.use("", routeAuth, staffUsers);
+app.use("", routeAuth, Users);
 
 app.use("", signOut);
 
