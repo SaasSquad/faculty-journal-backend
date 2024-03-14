@@ -1,51 +1,52 @@
 const express = require('express');
 const router = express.Router();
-const Post = require('../schema/Post');
+const Article = require('../schema/Article');
+const jwt = require('../middleware/jwtAuth');
 
-router.put('/approve-post/:id', async(req, res) => {
+router.put('/approve-article/:id', jwt, async(req, res) => {
     const { id } = req.params;
 
     try {
-        const postToApprove = await Post.findById(id);
-        if (!postToApprove) {
-            return res.status(404).json({ error: 'Post not found' });
+        const articleToApprove = await Article.findById(id);
+        if (!articleToApprove) {
+            return res.status(404).json({ error: 'Article not found' });
         }
 
-        if (postToApprove.isApproved) {
-            return res.status(400).json({ error: 'Post already approved' });
+        if (articleToApprove.isApproved) {
+            return res.status(400).json({ error: 'Article already approved' });
         }
 
-        postToApprove.isApproved = true;
-        // postToApprove.approvedBy = req.user.username;
-        postToApprove.approvedAt = new Date();
+        articleToApprove.isApproved = true;
+        // articleToApprove.approvedBy = req.user.username;
+        articleToApprove.approvedAt = new Date();
 
-        await postToApprove.save();
+        await articleToApprove.save();
 
-        res.json(postToApprove);
+        res.json(articleToApprove);
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
-router.put('/reject/:id', async(req, res) => {
+router.put('/reject/:id', jwt, async(req, res) => {
     try {
-        const postId = req.params.id;
+        const articleId = req.params.id;
         const { rejectionReason } = req.body;
-        const rejectedPost = await Post.findByIdAndUpdate(postId, { isApproved: false, rejectionReason }, { new: true });
-        if (!rejectedPost) {
-            return res.status(404).json({ error: 'Post not found' });
+        const rejectedArticle = await Article.findByIdAndUpdate(articleId, { isApproved: false, rejectionReason }, { new: true });
+        if (!rejectedArticle) {
+            return res.status(404).json({ error: 'Article not found' });
         }
-        res.json(rejectedPost);
+        res.json(rejectedArticle);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
-router.get('/pending-posts', async(req, res) => {
+router.get('/pending-articles', jwt, async(req, res) => {
     try {
-        const pendingPosts = await Post.find({ isApproved: false });
-        res.json(pendingPosts);
+        const pendingArticles = await Article.find({ isApproved: false });
+        res.json(pendingArticles);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -53,38 +54,38 @@ router.get('/pending-posts', async(req, res) => {
 });
 
 
-router.get('/posts', async(req, res) => {
+router.get('/articles', async(req, res) => {
     try {
-        const posts = await Post.find();
-        res.json(posts);
+        const articles = await Article.find();
+        res.json(articles);
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
-router.get('/post/:id', async(req, res) => {
-    const postId = req.params.id;
+router.get('/article/:id', async(req, res) => {
+    const articleId = req.params.id;
 
     try {
-        const post = await Post.findById(postId);
-        if (!post) {
-            return res.status(404).json({ error: 'Post not found' });
+        const article = await Article.findById(articleId);
+        if (!article) {
+            return res.status(404).json({ error: 'Article not found' });
         }
-        res.json(post);
+        res.json(article);
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
-router.delete('/post/:id', async(req, res) => {
+router.delete('/article/:id', async(req, res) => {
     const { id } = req.params;
 
     try {
-        const deletedPost = await Post.findByIdAndDelete(id);
-        if (!deletedPost) {
-            return res.status(404).json({ error: 'Post not found' });
+        const deletedArticle = await Article.findByIdAndDelete(id);
+        if (!deletedArticle) {
+            return res.status(404).json({ error: 'Article not found' });
         }
-        res.json(deletedPost);
+        res.json(deletedArticle);
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }

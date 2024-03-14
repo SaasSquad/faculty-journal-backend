@@ -9,7 +9,7 @@ const bodyParser = require('body-parser');
 const Users = require("./routes/getUsers");
 const signOut = require("./routes/signout");
 const routeAuth = require("./middleware/jwtAuth")
-
+const cors = require("cors")
 
 const PORT = process.env.PORT || 3001;
 
@@ -17,6 +17,11 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(cors({
+    origin: ["http://localhost:5173/"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
+}))
 
 app.listen(PORT, () => {
     console.log(`app is running on PORT : ${PORT}`)
