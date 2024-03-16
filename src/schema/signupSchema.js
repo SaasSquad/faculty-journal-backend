@@ -16,12 +16,16 @@ const userSchema = new mongoose.Schema({
         unique: true,
     },
     role: {
+<<<<<<< HEAD
         type : String,
         default: "not admin",
     },
     academicStatus: {
         type: String,
         require: true,
+=======
+        type: String,
+>>>>>>> 2b74f6a2c5c3020d5b62722c2486b612184ba2c6
     },
     password: {
         type: String,
