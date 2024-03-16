@@ -8,7 +8,10 @@ const login = require("./routes/userlogin");
 const bodyParser = require('body-parser');
 const Users = require("./routes/getUsers");
 const signOut = require("./routes/signout");
-const routeAuth = require("./middleware/jwtAuth")
+const routeAuth = require("./middleware/jwtAuth");
+const assignadmin = require("./routes/assignAdmin");
+const disadmin = require("./routes/disAdmin");
+const adminStatus = require("./middleware/adminStatus");
 
 
 const PORT = process.env.PORT || 3001;
@@ -29,6 +32,10 @@ app.use("", login);
 app.use("", routeAuth, Users);
 
 app.use("", signOut);
+
+app.use("", adminStatus, assignadmin);
+
+app.use("", adminStatus, disadmin);
 
 
 app.use('', require('./routes/studentRoutes'));
