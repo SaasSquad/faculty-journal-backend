@@ -3,7 +3,13 @@ const jwt = require("jsonwebtoken");
 const User = require("../schema/signupSchema");
 const { comparePassword } = require("../middleware/hashPassword");
 const router = Router();
+const express = require('express');
+const cookieParser = require('cookie-parser');
 
+const app = express();
+
+
+app.use(cookieParser());
 router.post("/login", async(req, res) => {
     const { email, password } = req.body;
     if (!email || !password) { return res.sendStatus(400) };
