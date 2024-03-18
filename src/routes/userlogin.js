@@ -24,9 +24,9 @@ router.post("/login", async(req, res) => {
     //generate Jwt token
     const token = jwt.sign({ userId: userDB._id }, process.env.JWT_SECRET_KEY, { expiresIn: "48h" });
     res.cookie("token", token, { httpOnly: false });
+    // localStorage.setItem('token', token);
 
     //send success respond
-
     return res.sendStatus(200);
 })
 

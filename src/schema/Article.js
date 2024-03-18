@@ -12,7 +12,7 @@ const articleSchema = new mongoose.Schema({
     },
     file: {
         type: String,
-        require: true,
+        // require: true,
         unique: true,
     },
     author: String,
@@ -33,6 +33,6 @@ const articleSchema = new mongoose.Schema({
 });
 
 
-const Article = mongoose.model('Article', articleSchema);
+const Article = mongoose.model('articles', articleSchema);
 
 module.exports = Article;

@@ -22,23 +22,16 @@ const upload = multer({
     storage: storage
 })
 
-router.post('/create-article', jwt, upload.single('file'), async(req, res) => {
-    // const { title, description } = req.body;
+router.post('/create-article', (req, res) => {
     // const author = req.user.username;
 
     const { title, description } = req.body
-    PostModel.create({ title: title, description: description, file: req.file.filename })
+    Article.create({ title: title, description: description })
         .then(result => {
-            res.status(201).json('Success')
+            res.status(201).json(result)
         })
         .catch(error => res.status(500).json({ error: 'Internal Server Error' }))
-        // try {
-        //     const newArticle = new Article({ title, description });
-        //     await newArticle.save();
-        //     res.status(201).json(newArticle);
-        // } catch (error) {
-        //     res.status(500).json({ error: 'Internal Server Error' });
-        // }
+
 });
 
 router.get('/articles', async(req, res) => {
