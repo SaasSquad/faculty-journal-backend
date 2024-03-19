@@ -53,8 +53,9 @@ router.get('/pending-articles', async(req, res) => {
     }
 });
 
-const lastArticleIndex = 0;
+
 router.get('/articles', async(req, res) => {
+    const lastArticleIndex = 0;
     const articlesPerBatch = 20;
     try {
         const articles = await Article.find().skip(lastArticleIndex).limit(articlesPerBatch);
