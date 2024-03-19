@@ -36,23 +36,30 @@ router.post('/create-article', authenticateToken, (req, res) => {
 
 });
 
+const lastArticleIndex = 0;
 router.get('/articles', async(req, res) => {
+
+    const articlesPerBatch = 20;
     try {
-        const articles = await Article.find({ isApproved: true });
+        const articles = await Article.find({ isApproved: true }).skip(lastArticleIndex).limit(articlesPerBatch);
+        if(articles.length == 0){
+            res.json("No more articles");
+        }
+        lastArticleIndex += articles.length;
         res.json(articles);
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
-router.get('/articles', async(req, res) => {
-    try {
-        const articles = await Article.find({ isApproved: true });
-        res.json(articles);
-    } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
+// router.get('/articles', async(req, res) => {
+//     try {
+//         const articles = await Article.find({ isApproved: true });
+//         res.json(articles);
+//     } catch (error) {
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
 
 router.get('/article/:id', async(req, res) => {
     const articleId = req.params.title;
