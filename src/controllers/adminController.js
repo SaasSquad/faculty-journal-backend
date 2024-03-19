@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const Article = require('../schema/Article');
-const jwt = require('../middleware/jwtAuth');
+// const jwt = require('../middleware/jwtAuth');
 
-router.put('/approve-article/:id', jwt, async(req, res) => {
+router.put('/approve-article/:id', async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -28,7 +28,7 @@ router.put('/approve-article/:id', jwt, async(req, res) => {
     }
 });
 
-router.put('/reject/:id', jwt, async(req, res) => {
+router.put('/reject/:id', async(req, res) => {
     try {
         const articleId = req.params.id;
         const { rejectionReason } = req.body;
@@ -43,7 +43,7 @@ router.put('/reject/:id', jwt, async(req, res) => {
     }
 });
 
-router.get('/pending-articles', jwt, async(req, res) => {
+router.get('/pending-articles', async(req, res) => {
     try {
         const pendingArticles = await Article.find({ isApproved: false });
         res.json(pendingArticles);

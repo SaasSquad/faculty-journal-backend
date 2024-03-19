@@ -3,8 +3,10 @@ const router = express.Router();
 const Article = require('../schema/Article');
 const app = express();
 const bodyParser = require('body-parser');
-const jwt = require('../middleware/jwtAuth');
-const multer = require("multer")
+// const jwt = require('../middleware/jwtAuth');
+const multer = require("multer");
+const authenticateToken = require('../middleware/jwtAuth');
+const User = require('../schema/signupSchema');
 
 app.use(bodyParser.json());
 
@@ -22,16 +24,25 @@ const upload = multer({
     storage: storage
 })
 
-router.post('/create-article', (req, res) => {
-    // const author = req.user.username;
+router.post('/create-article', authenticateToken, (req, res) => {
+    const author = req.user.username;
 
     const { title, description } = req.body
-    Article.create({ title: title, description: description })
+    Article.create({ title: title, description: description, author: author })
         .then(result => {
             res.status(201).json(result)
         })
         .catch(error => res.status(500).json({ error: 'Internal Server Error' }))
 
+});
+
+router.get('/articles', async(req, res) => {
+    try {
+        const articles = await Article.find({ isApproved: true });
+        res.json(articles);
+    } catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 });
 
 router.get('/articles', async(req, res) => {
@@ -57,7 +68,7 @@ router.get('/article/:id', async(req, res) => {
     }
 });
 
-router.put('/article/:id', jwt, async(req, res) => {
+router.put('/article/:id', authenticateToken, async(req, res) => {
     const { id } = req.params;
     const { title, description } = req.body;
     const file = req.file.filename;
@@ -73,7 +84,7 @@ router.put('/article/:id', jwt, async(req, res) => {
     }
 });
 
-router.delete('/article/:id', async(req, res) => {
+router.delete('/article/:id', authenticateToken, async(req, res) => {
     const { id } = req.params;
 
     try {

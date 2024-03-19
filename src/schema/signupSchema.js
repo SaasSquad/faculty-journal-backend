@@ -4,7 +4,6 @@ const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
         require: true,
-        unique: false,
     },
     lastName: {
         type: String,
@@ -16,7 +15,7 @@ const userSchema = new mongoose.Schema({
         unique: true,
     },
     role: {
-        type : String,
+        type: String,
         default: "not admin",
     },
     academicStatus: {

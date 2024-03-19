@@ -9,10 +9,10 @@ const login = require("./routes/userlogin");
 const bodyParser = require('body-parser');
 const Users = require("./routes/getUsers");
 const signOut = require("./routes/signout");
-const routeAuth = require("./middleware/jwtAuth");
 const assignadmin = require("./routes/assignAdmin");
 const disadmin = require("./routes/disAdmin");
-const adminStatus = require("./middleware/adminStatus");
+const User = require("./schema/signupSchema");
+
 
 
 const PORT = process.env.PORT || 3001;
@@ -31,17 +31,21 @@ app.listen(PORT, () => {
     console.log(`app is running on PORT : ${PORT}`)
 });
 
+app.get('/', (req, res) => {
+    return res.json({ email: req.email, firstName: req.firstName, lastName: req.lastName })
+})
+
 app.use("", signup);
 
 app.use("", login);
 
-app.use("", routeAuth, Users);
+app.use("", Users);
 
 app.use("", signOut);
 
-app.use("", adminStatus, assignadmin);
+app.use("", assignadmin);
 
-app.use("", adminStatus, disadmin);
+app.use("", disadmin);
 
 
 app.use('', require('./routes/studentRoutes'));
