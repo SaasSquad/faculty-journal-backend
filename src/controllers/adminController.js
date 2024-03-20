@@ -54,28 +54,28 @@ router.get('/pending-articles', async(req, res) => {
 });
 
 
-// router.get('/articles', async(req, res) => {
-//     let lastArticleIndex = 0;
-//     try {
-//         let articles = await Article.find().skip(lastArticleIndex).limit(20);
-//         if(articles.length == 0){
-//             res.json("No more articles");
-//         }
-//         lastArticleIndex += articles.length;
-//         res.json(articles);
-//     } catch (error) {
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// });
-
 router.get('/articles', async(req, res) => {
+    let lastArticleIndex = 0;
     try {
-        const articles = await Article.find();
+        let articles = await Article.find().skip(lastArticleIndex).limit(20);
+        if(articles.length == 0){
+            res.json("No more articles");
+        }
+        lastArticleIndex += articles.length;
         res.json(articles);
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+// router.get('/articles', async(req, res) => {
+//     try {
+//         const articles = await Article.find();
+//         res.json(articles);
+//     } catch (error) {
+//         res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// });
 
 
 router.get('/article/:id', async(req, res) => {
