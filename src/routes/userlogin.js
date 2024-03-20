@@ -22,7 +22,13 @@ router.post("/login", async(req, res) => {
         return res.sendStatus(401);
     }
     //generate Jwt token
-    const token = jwt.sign({ userId: userDB._id }, process.env.JWT_SECRET_KEY, { expiresIn: "48h" });
+    const token = jwt.sign({
+            // userId: userDB._id,
+            email: userDB.email,
+            firstName: userDB.firstName,
+            lastName: userDB.lastName
+        },
+        process.env.JWT_SECRET_KEY, { expiresIn: "48h" });
     res.cookie("token", token, { httpOnly: false });
     // localStorage.setItem('token', token);
 

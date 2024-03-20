@@ -12,7 +12,7 @@ const signOut = require("./routes/signout");
 const assignadmin = require("./routes/assignAdmin");
 const disadmin = require("./routes/disAdmin");
 const User = require("./schema/signupSchema");
-
+const authenticateToken = require("./middleware/jwtAuth");
 
 
 const PORT = process.env.PORT || 3001;
@@ -31,7 +31,7 @@ app.listen(PORT, () => {
     console.log(`app is running on PORT : ${PORT}`)
 });
 
-app.get('/', (req, res) => {
+app.get('/', authenticateToken, (req, res) => {
     return res.json({ email: req.email, firstName: req.firstName, lastName: req.lastName })
 })
 
