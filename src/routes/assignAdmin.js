@@ -13,7 +13,7 @@ router.put("/assignadmin/:id", adminStatus, async(req, res) => {
             res.sendStatus(403);
         }
         const adminStatus = user.role;
-        if (adminStatus == "admin") {
+        if (!adminStatus == "admin") {
             res.sendStatus(403);
         }
         user.role = "admin"
