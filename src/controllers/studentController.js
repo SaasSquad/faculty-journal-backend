@@ -38,10 +38,9 @@ router.post('/create-article', authenticateToken, (req, res) => {
 
 
 router.get('/articles', async(req, res) => {
-    const lastArticleIndex = 0;
-    const articlesPerBatch = 20;
+    let lastArticleIndex = 0;
     try {
-        const articles = await Article.find({ isApproved: true }).skip(lastArticleIndex).limit(articlesPerBatch);
+        const articles = await Article.find().skip(lastArticleIndex).limit(20);
         if(articles.length == 0){
             res.json("No more articles");
         }
