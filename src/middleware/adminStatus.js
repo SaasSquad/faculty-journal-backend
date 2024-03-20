@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken");
 const User = require("../schema/signupSchema");
 
-const checkAdminStatus = async(req, res, next) => {
-    const token = req.cookies.token;
+const adminStatus = async(req, res, next) => {
+    const token = req.cookies.jwt;
     if (token) {
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY)
@@ -10,7 +10,7 @@ const checkAdminStatus = async(req, res, next) => {
             const user = await User.findById(userId);
 
             if (!user) {
-                return res.sendStatus(404);
+                return res.json("user not found");
             };
             const userRole = user.role;
 
@@ -26,4 +26,4 @@ const checkAdminStatus = async(req, res, next) => {
     }
 }
 
-module.exports = checkAdminStatus;
+module.exports = adminStatus;

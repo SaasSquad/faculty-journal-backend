@@ -64,7 +64,7 @@ router.get('/articles', async(req, res) => {
         lastArticleIndex += articles.length;
         res.json(articles);
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500);
     }
 });
 
