@@ -12,6 +12,7 @@ const signOut = require("./routes/signout");
 const assignadmin = require("./routes/assignAdmin");
 const disadmin = require("./routes/disAdmin");
 const User = require("./schema/signupSchema");
+const user = require("./routes/user")
 const authenticateToken = require("./middleware/jwtAuth");
 
 
@@ -38,6 +39,8 @@ app.get('/', authenticateToken, (req, res) => {
 app.use("", signup);
 
 app.use("", login);
+
+app.use("", user);
 
 app.use("", Users);
 
