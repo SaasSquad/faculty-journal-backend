@@ -22,9 +22,9 @@ router.put('/approve-article/:id', async(req, res) => {
 
         await articleToApprove.save();
 
-        res.json(articleToApprove);
+        return res.json(articleToApprove);
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -36,20 +36,20 @@ router.put('/reject/:id', async(req, res) => {
         if (!rejectedArticle) {
             return res.status(404).json({ error: 'Article not found' });
         }
-        res.json(rejectedArticle);
+        return res.json(rejectedArticle);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
 router.get('/pending-articles', async(req, res) => {
     try {
         const pendingArticles = await Article.find({ isApproved: false });
-        res.json(pendingArticles);
+        return res.json(pendingArticles);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -58,13 +58,13 @@ router.get('/articles', async(req, res) => {
     let lastArticleIndex = 0;
     try {
         let articles = await Article.find().skip(lastArticleIndex).limit(20);
-        if(articles.length == 0){
-            res.json("No more articles");
+        if (articles.length == 0) {
+            return res.json("No more articles");
         }
         lastArticleIndex += articles.length;
-        res.json(articles);
+        return res.json(articles);
     } catch (error) {
-        res.status(500);
+        return res.status(500);
     }
 });
 
@@ -86,9 +86,9 @@ router.get('/article/:id', async(req, res) => {
         if (!article) {
             return res.status(404).json({ error: 'Article not found' });
         }
-        res.json(article);
+        return res.json(article);
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -100,9 +100,9 @@ router.delete('/article/:id', async(req, res) => {
         if (!deletedArticle) {
             return res.status(404).json({ error: 'Article not found' });
         }
-        res.json(deletedArticle);
+        return res.json(deletedArticle);
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 

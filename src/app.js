@@ -32,10 +32,6 @@ app.listen(PORT, () => {
     console.log(`app is running on PORT : ${PORT}`)
 });
 
-app.get('/', authenticateToken, (req, res) => {
-    return res.json({ email: req.email, firstName: req.firstName, lastName: req.lastName })
-})
-
 app.use("", signup);
 
 app.use("", login);

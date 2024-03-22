@@ -30,7 +30,7 @@ router.post('/create-article', authenticateToken, (req, res) => {
     const { title, description } = req.body
     Article.create({ title: title, description: description, author: author })
         .then(result => {
-            res.status(201).json(result)
+            return res.status(201).json(result)
         })
         .catch(error => res.status(500).json({ error: 'Internal Server Error' }))
 
@@ -41,13 +41,13 @@ router.get('/articles', async(req, res) => {
     let lastArticleIndex = 0;
     try {
         let articles = await Article.find({ isApproved: true }).skip(lastArticleIndex).limit(20);
-        if(articles.length == 0){
-            res.json("No more articles");
+        if (articles.length == 0) {
+            return res.json("No more articles");
         }
         lastArticleIndex += articles.length;
-        res.json(articles);
+        return res.json(articles);
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -68,9 +68,9 @@ router.get('/article/:id', async(req, res) => {
         if (!article) {
             return res.status(404).json({ error: 'Article not found' });
         }
-        res.json(article);
+        return res.json(article);
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -84,9 +84,9 @@ router.put('/article/:id', authenticateToken, async(req, res) => {
         if (!updatedArticle) {
             return res.status(404).json({ error: 'Article not found' });
         }
-        res.json(updatedArticle);
+        return res.json(updatedArticle);
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
@@ -98,9 +98,9 @@ router.delete('/article/:id', authenticateToken, async(req, res) => {
         if (!deletedArticle) {
             return res.status(404).json({ error: 'Article not found' });
         }
-        res.json(deletedArticle);
+        return res.json(deletedArticle);
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
