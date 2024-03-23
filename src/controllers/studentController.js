@@ -38,7 +38,8 @@ router.post('/create-article/:token', authenticateToken, upload.single('file'), 
             title: title,
             description: description,
             file: req.file.filename,
-            author: { firstName: user.firstName, lastName: user.lastName }
+            author: { firstName: user.firstName, lastName: user.lastName },
+            userId: userId
         })
         .then(result => {
             return res.status(201).json(result)
@@ -47,6 +48,25 @@ router.post('/create-article/:token', authenticateToken, upload.single('file'), 
 
 });
 
+
+router.get('/articles/:token', async(req, res) => {
+    const token = req.params.token
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const userId = decoded.userId;
+
+    let lastArticleIndex = 0;
+    try {
+        let articles = await Article.find({ isApproved: true, userId: userId }).skip(lastArticleIndex).limit(20);
+        if (articles.length == 0) {
+            return res.json("No more articles");
+        }
+        lastArticleIndex += articles.length;
+        return res.json(articles);
+    } catch (error) {
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 router.get('/articles', async(req, res) => {
     let lastArticleIndex = 0;
@@ -62,15 +82,6 @@ router.get('/articles', async(req, res) => {
     }
 });
 
-// router.get('/articles', async(req, res) => {
-//     try {
-//         const articles = await Article.find({ isApproved: true });
-//         res.json(articles);
-//     } catch (error) {
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// });
-
 router.get('/article/:id', async(req, res) => {
     const articleId = req.params.title;
 
@@ -85,7 +96,7 @@ router.get('/article/:id', async(req, res) => {
     }
 });
 
-router.put('/article/:id', authenticateToken, async(req, res) => {
+router.put('/article/:id', async(req, res) => {
     const { id } = req.params;
     const { title, description } = req.body;
     const file = req.file.filename;
@@ -101,7 +112,7 @@ router.put('/article/:id', authenticateToken, async(req, res) => {
     }
 });
 
-router.delete('/article/:id', authenticateToken, async(req, res) => {
+router.delete('/article/:id', async(req, res) => {
     const { id } = req.params;
 
     try {

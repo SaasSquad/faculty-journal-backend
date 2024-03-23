@@ -3,6 +3,6 @@ const router = express.Router();
 const adminController = require('../controllers/adminController');
 const adminStatus = require('../middleware/adminStatus');
 
-router.use('/admin', adminStatus, adminController);
+router.use('/admin', adminController);
 
 module.exports = router;

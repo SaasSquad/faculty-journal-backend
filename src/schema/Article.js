@@ -16,6 +16,10 @@ const articleSchema = new mongoose.Schema({
         // unique: true,
     },
     author: mongoose.Schema.Types.Mixed,
+    userId: {
+        type: String,
+        require: true
+    },
     approvedBy: String,
     rejectionReason: {
         type: String,

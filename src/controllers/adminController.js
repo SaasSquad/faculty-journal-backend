@@ -34,7 +34,9 @@ router.post('/create-article/:token', adminStatus, upload.single('file'), async(
             title: title,
             description: description,
             file: req.file.filename,
-            author: { firstName: user.firstName, lastName: user.lastName }
+            isApproved: true,
+            author: { firstName: user.firstName, lastName: user.lastName },
+            userId: userId
         })
         .then(result => {
             return res.status(201).json(result)
@@ -83,7 +85,7 @@ router.put('/reject/:id', async(req, res) => {
     }
 });
 
-router.get('/pending-articles', adminStatus, async(req, res) => {
+router.get('/pending-articles/:token', adminStatus, async(req, res) => {
     try {
         const pendingArticles = await Article.find({ isApproved: false });
         return res.json(pendingArticles);
@@ -94,10 +96,15 @@ router.get('/pending-articles', adminStatus, async(req, res) => {
 });
 
 
-router.get('/articles', async(req, res) => {
+router.get('/articles/:token', async(req, res) => {
+    const token = req.params.token
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const userId = decoded.userId;
+
     let lastArticleIndex = 0;
     try {
-        let articles = await Article.find().skip(lastArticleIndex).limit(20);
+        let articles = await Article.find({ userId }).skip(lastArticleIndex).limit(20);
         if (articles.length == 0) {
             return res.json("No more articles");
         }

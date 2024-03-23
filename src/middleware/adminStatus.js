@@ -2,7 +2,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../schema/signupSchema");
 
 const adminStatus = async(req, res, next) => {
-    const token = req.cookies.jwt;
+    // const token = req.cookies.jwt;
+    const token = req.params.token
     if (token) {
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY)
