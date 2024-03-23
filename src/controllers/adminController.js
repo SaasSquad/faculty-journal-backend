@@ -21,8 +21,9 @@ const upload = multer({
     storage: storage
 })
 
-router.post('/create-article', adminStatus, upload.single('file'), async(req, res) => {
-    const token = req.cookies.jwt;
+router.post('/create-article/:token', adminStatus, upload.single('file'), async(req, res) => {
+    // const token = req.cookies.jwt;
+    const token = req.params.token
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     const userId = decoded.userId;
