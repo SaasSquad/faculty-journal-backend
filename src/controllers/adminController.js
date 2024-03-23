@@ -1,7 +1,46 @@
 const express = require('express');
 const router = express.Router();
 const Article = require('../schema/Article');
-// const jwt = require('../middleware/jwtAuth');
+const multer = require('multer');
+const adminStatus = require('../middleware/adminStatus');
+const path = require("path");
+const User = require('../schema/signupSchema');
+const jwt = require("jsonwebtoken");
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'Public/Images')
+    },
+
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname))
+    }
+})
+
+const upload = multer({
+    storage: storage
+})
+
+router.post('/create-article', adminStatus, upload.single('file'), async(req, res) => {
+    const token = req.cookies.jwt;
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const userId = decoded.userId;
+    const user = await User.findById(userId);
+
+    const { title, description } = req.body
+    Article.create({
+            title: title,
+            description: description,
+            file: req.file.filename,
+            author: { firstName: user.firstName, lastName: user.lastName }
+        })
+        .then(result => {
+            return res.status(201).json(result)
+        })
+        .catch(error => res.status(500).json({ error: 'Internal Server Error' }))
+
+});
 
 router.put('/approve-article/:id', async(req, res) => {
     const { id } = req.params;
@@ -43,7 +82,7 @@ router.put('/reject/:id', async(req, res) => {
     }
 });
 
-router.get('/pending-articles', async(req, res) => {
+router.get('/pending-articles', adminStatus, async(req, res) => {
     try {
         const pendingArticles = await Article.find({ isApproved: false });
         return res.json(pendingArticles);

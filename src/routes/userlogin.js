@@ -21,7 +21,7 @@ router.post("/login", async(req, res) => {
 
     //send success respond
 
-    return res.status(200).json(token);
+    return res.status(200).json({ userDB, token });
 })
 
 module.exports = router;

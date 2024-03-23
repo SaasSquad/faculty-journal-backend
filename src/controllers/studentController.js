@@ -3,10 +3,11 @@ const router = express.Router();
 const Article = require('../schema/Article');
 const app = express();
 const bodyParser = require('body-parser');
-// const jwt = require('../middleware/jwtAuth');
 const multer = require("multer");
 const authenticateToken = require('../middleware/jwtAuth');
 const User = require('../schema/signupSchema');
+const jwt = require("jsonwebtoken");
+const path = require("path")
 
 app.use(bodyParser.json());
 
@@ -24,11 +25,20 @@ const upload = multer({
     storage: storage
 })
 
-router.post('/create-article', authenticateToken, (req, res) => {
-    const author = req.user.username;
+router.post('/create-article', authenticateToken, upload.single('file'), async(req, res) => {
+    const token = req.cookies.jwt;
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const userId = decoded.userId;
+    const user = await User.findById(userId);
 
     const { title, description } = req.body
-    Article.create({ title: title, description: description, author: author })
+    Article.create({
+            title: title,
+            description: description,
+            file: req.file.filename,
+            author: { firstName: user.firstName, lastName: user.lastName }
+        })
         .then(result => {
             return res.status(201).json(result)
         })
