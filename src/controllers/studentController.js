@@ -8,6 +8,7 @@ const authenticateToken = require('../middleware/jwtAuth');
 const User = require('../schema/signupSchema');
 const jwt = require("jsonwebtoken");
 const path = require("path")
+const fs = require("fs");
 
 app.use(bodyParser.json());
 
@@ -34,10 +35,11 @@ router.post('/create-article/:token', authenticateToken, upload.single('file'), 
     const user = await User.findById(userId);
 
     const { title, description } = req.body
+    const pdfBuffer = fs.readFileSync(req.file.path);
     Article.create({
             title: title,
             description: description,
-            file: req.file.filename,
+            file: pdfBuffer,
             author: { firstName: user.firstName, lastName: user.lastName },
             userId: userId
         })

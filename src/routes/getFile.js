@@ -13,7 +13,7 @@ router.get("/file/:id", async(req, res) => {
         if(!file) {
             res.status(404).json({ error: "file not found" });
         } else{
-            res.json(file);
+            res.send(file);
         }
     } catch(error) {
         req.status(500);

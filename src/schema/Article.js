@@ -11,7 +11,7 @@ const articleSchema = new mongoose.Schema({
         unique: true,
     },
     file: {
-        type: String,
+        type: Buffer,
         // require: true,
         // unique: true,
     },

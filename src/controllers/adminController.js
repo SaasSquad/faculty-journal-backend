@@ -6,6 +6,7 @@ const adminStatus = require('../middleware/adminStatus');
 const path = require("path");
 const User = require('../schema/signupSchema');
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -29,11 +30,12 @@ router.post('/create-article/:token', adminStatus, upload.single('file'), async(
     const userId = decoded.userId;
     const user = await User.findById(userId);
 
-    const { title, description } = req.body
+    const { title, description } = req.body;
+    const pdfBuffer = fs.readFileSync(req.file.path);
     Article.create({
             title: title,
             description: description,
-            file: req.file.filename,
+            file: pdfBuffer,
             isApproved: true,
             author: { firstName: user.firstName, lastName: user.lastName },
             userId: userId
