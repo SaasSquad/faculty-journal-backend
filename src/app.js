@@ -25,7 +25,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static('Public'))
 app.use(cors({
-    origin: "*",
+    origin: ["http://localhost:5173", "https://faculty-journal.onrender.com"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }))
