@@ -3,26 +3,27 @@ const router = Router();
 const User = require("../schema/signupSchema");
 const jwt = require("jsonwebtoken");
 
-router.get("/user", async(req, res) => {
+router.get("/user/:token", async(req, res) => {
     try {
-        const token = req.cookies.jwt;
-        if(!token) {
+        // const token = req.cookies.jwt;
+        const token = req.params.token
+        if (!token) {
             return res.status(404).json("not authorize");
         }
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
         const userId = decoded.userId;
         const user = await User.findById(userId);
-        if(!user){
+        if (!user) {
             return res.status(404).json("user not found")
         }
-        const userInfos = { 
-            firstName : user.firstName,
-            lastName : user.lastName,
-            email : user.email,
-            role : user.role,
-            academicStatus : user.academicStatus,
-            dateCreated : user.dateCreated,
+        const userInfos = {
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            role: user.role,
+            academicStatus: user.academicStatus,
+            dateCreated: user.dateCreated,
         }
         return res.json(userInfos);
     } catch (error) {

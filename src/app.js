@@ -23,6 +23,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(express.static('Public'))
 app.use(cors({
     origin: ["http://localhost:5173/"],
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -32,10 +33,6 @@ app.use(cors({
 app.listen(PORT, () => {
     console.log(`app is running on PORT : ${PORT}`)
 });
-
-app.get('/', authenticateToken, (req, res) => {
-    return res.json({ email: req.email, firstName: req.firstName, lastName: req.lastName })
-})
 
 app.use("", signup);
 

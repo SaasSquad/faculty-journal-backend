@@ -3,10 +3,11 @@ const router = express.Router();
 const Article = require('../schema/Article');
 const app = express();
 const bodyParser = require('body-parser');
-// const jwt = require('../middleware/jwtAuth');
 const multer = require("multer");
 const authenticateToken = require('../middleware/jwtAuth');
 const User = require('../schema/signupSchema');
+const jwt = require("jsonwebtoken");
+const path = require("path")
 
 app.use(bodyParser.json());
 
@@ -24,41 +25,62 @@ const upload = multer({
     storage: storage
 })
 
-router.post('/create-article', authenticateToken, (req, res) => {
-    const author = req.user.username;
+router.post('/create-article/:token', authenticateToken, upload.single('file'), async(req, res) => {
+    // const token = req.cookies.jwt;
+    const token = req.params.token
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const userId = decoded.userId;
+    const user = await User.findById(userId);
 
     const { title, description } = req.body
-    Article.create({ title: title, description: description, author: author })
+    Article.create({
+            title: title,
+            description: description,
+            file: req.file.filename,
+            author: { firstName: user.firstName, lastName: user.lastName },
+            userId: userId
+        })
         .then(result => {
-            res.status(201).json(result)
+            return res.status(201).json(result)
         })
         .catch(error => res.status(500).json({ error: 'Internal Server Error' }))
 
 });
 
 
+router.get('/articles/:token', async(req, res) => {
+    const token = req.params.token
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    const userId = decoded.userId;
+
+    let lastArticleIndex = 0;
+    try {
+        let articles = await Article.find({ userId: userId }).skip(lastArticleIndex).limit(20);
+        if (articles.length == 0) {
+            return res.json("No more articles");
+        }
+        lastArticleIndex += articles.length;
+        return res.json(articles);
+    } catch (error) {
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 router.get('/articles', async(req, res) => {
     let lastArticleIndex = 0;
     try {
         let articles = await Article.find({ isApproved: true }).skip(lastArticleIndex).limit(20);
-        if(articles.length == 0){
-            res.json("No more articles");
+        if (articles.length == 0) {
+            return res.json("No more articles");
         }
         lastArticleIndex += articles.length;
-        res.json(articles);
+        return res.json(articles);
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
-
-// router.get('/articles', async(req, res) => {
-//     try {
-//         const articles = await Article.find({ isApproved: true });
-//         res.json(articles);
-//     } catch (error) {
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// });
 
 router.get('/article/:id', async(req, res) => {
     const articleId = req.params.title;
@@ -68,13 +90,13 @@ router.get('/article/:id', async(req, res) => {
         if (!article) {
             return res.status(404).json({ error: 'Article not found' });
         }
-        res.json(article);
+        return res.json(article);
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
-router.put('/article/:id', authenticateToken, async(req, res) => {
+router.put('/article/:id', async(req, res) => {
     const { id } = req.params;
     const { title, description } = req.body;
     const file = req.file.filename;
@@ -84,13 +106,13 @@ router.put('/article/:id', authenticateToken, async(req, res) => {
         if (!updatedArticle) {
             return res.status(404).json({ error: 'Article not found' });
         }
-        res.json(updatedArticle);
+        return res.json(updatedArticle);
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
-router.delete('/article/:id', authenticateToken, async(req, res) => {
+router.delete('/article/:id', async(req, res) => {
     const { id } = req.params;
 
     try {
@@ -98,9 +120,9 @@ router.delete('/article/:id', authenticateToken, async(req, res) => {
         if (!deletedArticle) {
             return res.status(404).json({ error: 'Article not found' });
         }
-        res.json(deletedArticle);
+        return res.json(deletedArticle);
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 

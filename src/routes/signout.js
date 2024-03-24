@@ -2,7 +2,7 @@ const { Router } = require("express");
 const router = Router();
 
 router.post("/signout", (req, res) => {
-    res.clearCookie("token");
+    res.clearCookie("jwt");
 
     return res.sendStatus(200)
 });

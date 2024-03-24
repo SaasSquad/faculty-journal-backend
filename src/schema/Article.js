@@ -13,9 +13,13 @@ const articleSchema = new mongoose.Schema({
     file: {
         type: String,
         // require: true,
-        unique: true,
+        // unique: true,
     },
-    author: String,
+    author: mongoose.Schema.Types.Mixed,
+    userId: {
+        type: String,
+        require: true
+    },
     approvedBy: String,
     rejectionReason: {
         type: String,
