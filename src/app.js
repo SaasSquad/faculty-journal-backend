@@ -13,6 +13,7 @@ const assignadmin = require("./routes/assignAdmin");
 const disadmin = require("./routes/disAdmin");
 const User = require("./schema/signupSchema");
 const user = require("./routes/user")
+const getFile = require("./routes/getFile");
 const authenticateToken = require("./middleware/jwtAuth");
 
 
@@ -49,6 +50,8 @@ app.use("", signOut);
 app.use("", assignadmin);
 
 app.use("", disadmin);
+
+app.use("", getFile);
 
 
 app.use('', require('./routes/studentRoutes'));
