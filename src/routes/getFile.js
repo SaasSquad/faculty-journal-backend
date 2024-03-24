@@ -13,6 +13,8 @@ router.get("/file/:id", async(req, res) => {
         if(!file) {
             res.status(404).json({ error: "file not found" });
         } else{
+            res.setHeader("content-Type", "application/pdf");
+            res.setHeader("content-Disposition", `attachment: filename="${article.title}.pdf"`)
             res.send(file);
         }
     } catch(error) {
