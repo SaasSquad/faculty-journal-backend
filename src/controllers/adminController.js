@@ -46,10 +46,10 @@ router.post('/create-article/:token', adminStatus, upload.single('file'), async(
 });
 
 router.put('/approve-article/:id', async(req, res) => {
-    const { id } = req.params;
+    const { _id } = req.params;
 
     try {
-        const articleToApprove = await Article.findById(id);
+        const articleToApprove = await Article.findById(_id);
         if (!articleToApprove) {
             return res.status(404).json({ error: 'Article not found' });
         }
@@ -123,6 +123,24 @@ router.get('/articles/:token', async(req, res) => {
 //         res.status(500).json({ error: 'Internal Server Error' });
 //     }
 // });
+
+router.get('/file/:id', async(req, res) => {
+
+    const articleId = req.params.id;
+
+    try {
+        const article = await Article.findById(articleId);
+        const rootDir = path.resolve(__dirname, '../../Public/Images')
+        const pdfPath = path.join(rootDir, article.file)
+
+        if (!article) {
+            return res.status(404).json({ error: 'Article not found' });
+        }
+        return res.json(pdfPath);
+    } catch (error) {
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+})
 
 
 router.get('/article/:id', async(req, res) => {

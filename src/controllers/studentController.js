@@ -57,7 +57,7 @@ router.get('/articles/:token', async(req, res) => {
 
     let lastArticleIndex = 0;
     try {
-        let articles = await Article.find({ isApproved: true, userId: userId }).skip(lastArticleIndex).limit(20);
+        let articles = await Article.find({ userId: userId }).skip(lastArticleIndex).limit(20);
         if (articles.length == 0) {
             return res.json("No more articles");
         }
