@@ -8,13 +8,12 @@ const authenticateToken = require('../middleware/jwtAuth');
 const User = require('../schema/signupSchema');
 const jwt = require("jsonwebtoken");
 const path = require("path")
-const fs = require("fs");
 
 app.use(bodyParser.json());
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, '../files')
+        cb(null, 'Public/Images')
     },
 
     filename: (req, file, cb) => {
@@ -38,7 +37,7 @@ router.post('/create-article/:token', authenticateToken, upload.single('file'), 
     Article.create({
             title: title,
             description: description,
-            file: req.file.filename,
+            file: req.file.path,
             author: { firstName: user.firstName, lastName: user.lastName },
             userId: userId
         })

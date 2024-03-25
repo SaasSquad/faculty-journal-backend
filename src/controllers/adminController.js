@@ -10,7 +10,7 @@ const fs = require("fs");
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, '../files')
+        cb(null, 'Public/Images')
     },
 
     filename: (req, file, cb) => {
@@ -34,7 +34,7 @@ router.post('/create-article/:token', adminStatus, upload.single('file'), async(
     Article.create({
             title: title,
             description: description,
-            file: req.file.filename,
+            file: req.file.path,
             isApproved: true,
             author: { firstName: user.firstName, lastName: user.lastName },
             userId: userId
@@ -47,10 +47,10 @@ router.post('/create-article/:token', adminStatus, upload.single('file'), async(
 });
 
 router.put('/approve-article/:id', async(req, res) => {
-    const id = req.params.id;
+    const { _id } = req.params;
 
     try {
-        const articleToApprove = await Article.findById(id);
+        const articleToApprove = await Article.findById(_id);
         if (!articleToApprove) {
             return res.status(404).json({ error: 'Article not found' });
         }
@@ -158,7 +158,7 @@ router.get('/article/:id', async(req, res) => {
     }
 });
 
-router.delete('/delete-article/:id', async(req, res) => {
+router.delete('/article/:id', async(req, res) => {
     const { id } = req.params;
 
     try {
