@@ -18,7 +18,7 @@ const authenticateToken = require("./middleware/jwtAuth");
 
 
 const PORT = process.env.PORT || 3001;
-app.use("Public", express.static("files"))
+app.use("/files", express.static("files"))
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

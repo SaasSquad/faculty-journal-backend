@@ -9,7 +9,7 @@ const jwt = require("jsonwebtoken");
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'Public/Images')
+        cb(null, 'files')
     },
 
     filename: (req, file, cb) => {
