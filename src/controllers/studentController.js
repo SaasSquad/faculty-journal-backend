@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'Public/Images')
+        cb(null, '../files')
     },
 
     filename: (req, file, cb) => {
@@ -35,11 +35,10 @@ router.post('/create-article/:token', authenticateToken, upload.single('file'), 
     const user = await User.findById(userId);
 
     const { title, description } = req.body
-    const pdfBuffer = fs.readFileSync(req.file.path);
     Article.create({
             title: title,
             description: description,
-            file: pdfBuffer,
+            file: req.file.filename,
             author: { firstName: user.firstName, lastName: user.lastName },
             userId: userId
         })
