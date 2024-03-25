@@ -47,10 +47,10 @@ router.post('/create-article/:token', adminStatus, upload.single('file'), async(
 });
 
 router.put('/approve-article/:id', async(req, res) => {
-    const { _id } = req.params;
+    const id = req.params.id;
 
     try {
-        const articleToApprove = await Article.findById(_id);
+        const articleToApprove = await Article.findById(id);
         if (!articleToApprove) {
             return res.status(404).json({ error: 'Article not found' });
         }
@@ -158,7 +158,7 @@ router.get('/article/:id', async(req, res) => {
     }
 });
 
-router.delete('/article/:id', async(req, res) => {
+router.delete('/delete-article/:id', async(req, res) => {
     const { id } = req.params;
 
     try {
