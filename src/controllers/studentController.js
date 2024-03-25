@@ -37,7 +37,7 @@ router.post('/create-article/:token', authenticateToken, upload.single('file'), 
     Article.create({
             title: title,
             description: description,
-            file: req.file.path,
+            file: req.file.filename,
             author: { firstName: user.firstName, lastName: user.lastName },
             userId: userId
         })
