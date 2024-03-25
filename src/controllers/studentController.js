@@ -112,7 +112,7 @@ router.put('/article/:id', async(req, res) => {
     }
 });
 
-router.delete('/article/:id', async(req, res) => {
+router.delete('/delete-article/:id', async(req, res) => {
     const { id } = req.params;
 
     try {
