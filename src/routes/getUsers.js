@@ -4,9 +4,9 @@ const User = require("../schema/signupSchema");
 const routeAuth = require("../middleware/jwtAuth");
 
 
-router.get("/users", routeAuth, async(req, res) => {
+router.get("/users/:token", routeAuth, async(req, res) => {
     try {
-        const Users = await User.find({}, "firstName lastName email role dateCreated");
+        const Users = await User.find({}, "firstName lastName email role academicStatus dateCreated");
         res.json(Users);
     } catch (err) {
         res.sendStatus(401);
