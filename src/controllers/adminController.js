@@ -6,6 +6,15 @@ const adminStatus = require('../middleware/adminStatus');
 const path = require("path");
 const User = require('../schema/signupSchema');
 const jwt = require("jsonwebtoken");
+const fs = require('fs');
+const { Octokit } = require('@octokit/rest');
+const { log } = require('console');
+require("dotenv").config();
+
+const octokit = new Octokit({
+    // Generate an access token from your GitHub account
+    auth: process.env.GITHUB_AUTH, 
+  });
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -42,6 +51,27 @@ router.post('/create-article/:token', adminStatus, upload.single('file'), async(
             return res.status(201).json(result)
         })
         .catch(error => res.status(500).json({ error: 'Internal Server Error' }))
+        const file = req.file.filename
+        try {
+            const fileContent = fs.readFileSync(req.file.path);
+            const uploadResponse = await octokit.repos.createOrUpdateFileContents({
+              owner: 'SaasSquad',
+              repo: 'faculty-journal-backend',
+              path: "files/" +`${file}`,
+              branch: "main",
+              message: 'Upload file via API',
+              content: fileContent.toString('base64'),
+            });
+            console.log(uploadResponse);
+        
+            // Delete the file from local storage after uploading to GitHub
+            fs.unlinkSync(req.file.path);
+        
+            res.status(200);
+          } catch (error) {
+            console.error('Error uploading file to GitHub:', error);
+            res.status(500);
+          }
 
 });
 
