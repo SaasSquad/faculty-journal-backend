@@ -11,9 +11,9 @@ router.get("/files", async(req, res) => {
         const article = await Articles.find();
         const file = article
 
-        res.json(file)
+        return res.json(file)
     } catch (error) {
-        res.status(500);
+        return res.status(500);
     }
 });
 
