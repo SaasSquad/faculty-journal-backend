@@ -144,16 +144,44 @@ router.put('/article/:id', async(req, res) => {
 
 router.delete('/delete-article/:id', async(req, res) => {
     const { id } = req.params;
+    const article = await Article.findById(id);
+    const file = article.file;
 
     try {
         const deletedArticle = await Article.findByIdAndDelete(id);
         if (!deletedArticle) {
-            return res.status(404).json({ error: 'Article not found' });
+            res.status(404).json({ error: 'Article not found' });
         }
-        return res.json(deletedArticle);
+        res.json(deletedArticle);
     } catch (error) {
-        return res.status(500).json({ error: 'Internal Server Error' });
+        res.status(500).json({ error: 'Internal Server Error' });
     }
+
+    const { data } = await octokit.repos.getContent({
+        owner: 'SaasSquad', // Replace with your GitHub username or organization
+        repo: 'faculty-journal-backend', // Replace with your repository name
+        path: "files/" +`${file}`,
+      });
+
+      const sha = data.sha;
+      console.log(sha);
+        try {
+            
+            const deleteResponse = await octokit.repos.deleteFile({
+              owner: 'SaasSquad',
+              repo: 'faculty-journal-backend',
+              path: "files/" +`${file}`,
+              branch: "main",
+              message: 'delete file via API',
+              sha: sha,
+            });
+            console.log(deleteResponse);
+        
+            res.status(200);
+          } catch (error) {
+            console.error('Error deleting file to GitHub:', error);
+            res.status(500);
+          }
 });
 
 module.exports = router;
