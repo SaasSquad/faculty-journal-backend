@@ -15,8 +15,8 @@ require("dotenv").config();
 
 const octokit = new Octokit({
     // Generate an access token from your GitHub account
-    auth: process.env.GITHUB_AUTH, 
-  });
+    auth: process.env.GITHUB_AUTH,
+});
 
 app.use(bodyParser.json());
 
@@ -55,26 +55,26 @@ router.post('/create-article/:token', authenticateToken, upload.single('file'), 
         })
         .catch(error => res.status(500).json({ error: 'Internal Server Error' }))
 
-        const file = req.file.filename
-        try {
-            const fileContent = fs.readFileSync(req.file.path);
-            const uploadResponse = await octokit.repos.createOrUpdateFileContents({
-              owner: 'SaasSquad',
-              repo: 'faculty-journal-backend',
-              path: "files/" +`${file}`,
-              branch: "main",
-              message: 'Upload file via API',
-              content: fileContent.toString('base64'),
-            });
-            console.log(uploadResponse);
-        
-            // Delete the file from local storage after uploading to GitHub
-            fs.unlinkSync(req.file.path);
-            res.status(200);
-          } catch (error) {
-            console.error('Error uploading file to GitHub:', error);
-            res.status(500);
-          }
+    const file = req.file.filename
+    try {
+        const fileContent = fs.readFileSync(req.file.path);
+        const uploadResponse = await octokit.repos.createOrUpdateFileContents({
+            owner: 'SaasSquad',
+            repo: 'faculty-journal-backend',
+            path: "files/" + `${file}`,
+            branch: "main",
+            message: 'Upload file via API',
+            content: fileContent.toString('base64'),
+        });
+        console.log(uploadResponse);
+
+        // Delete the file from local storage after uploading to GitHub
+        fs.unlinkSync(req.file.path);
+        res.status(200);
+    } catch (error) {
+        console.error('Error uploading file to GitHub:', error);
+        res.status(500);
+    }
 
 });
 
@@ -152,36 +152,36 @@ router.delete('/delete-article/:id', async(req, res) => {
         if (!deletedArticle) {
             res.status(404).json({ error: 'Article not found' });
         }
-        res.json(deletedArticle);
+        return res.json(deletedArticle);
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 
     const { data } = await octokit.repos.getContent({
         owner: 'SaasSquad', // Replace with your GitHub username or organization
         repo: 'faculty-journal-backend', // Replace with your repository name
-        path: "files/" +`${file}`,
-      });
+        path: "files/" + `${file}`,
+    });
 
-      const sha = data.sha;
-      console.log(sha);
-        try {
-            
-            const deleteResponse = await octokit.repos.deleteFile({
-              owner: 'SaasSquad',
-              repo: 'faculty-journal-backend',
-              path: "files/" +`${file}`,
-              branch: "main",
-              message: 'delete file via API',
-              sha: sha,
-            });
-            console.log(deleteResponse);
-        
-            res.status(200);
-          } catch (error) {
-            console.error('Error deleting file to GitHub:', error);
-            res.status(500);
-          }
+    const sha = data.sha;
+    console.log(sha);
+    try {
+
+        const deleteResponse = await octokit.repos.deleteFile({
+            owner: 'SaasSquad',
+            repo: 'faculty-journal-backend',
+            path: "files/" + `${file}`,
+            branch: "main",
+            message: 'delete file via API',
+            sha: sha,
+        });
+        console.log(deleteResponse);
+
+        res.status(200);
+    } catch (error) {
+        console.error('Error deleting file to GitHub:', error);
+        res.status(500);
+    }
 });
 
 module.exports = router;
