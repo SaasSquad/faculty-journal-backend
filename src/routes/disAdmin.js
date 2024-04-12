@@ -5,8 +5,8 @@ const app = express();
 const bodyParser = require('body-parser');
 const adminStatus = require("../middleware/adminStatus");
 
-router.put("/disadmin/:id", adminStatus, async(req, res) => {
-    const { id } = req.params;
+router.put("/disadmin/:token", adminStatus, async(req, res) => {
+    const id = req.query.id;
     try {
         const user = await User.findById(id)
         if (!user) {
