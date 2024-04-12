@@ -5,8 +5,8 @@ const app = express();
 const bodyParser = require('body-parser');
 const adminStatus = require("../middleware/adminStatus");
 
-router.put("/assignadmin/:id", adminStatus, async(req, res) => {
-    const { id } = req.params;
+router.put("/assignadmin/:token", adminStatus, async(req, res) => {
+    const id = req.query.id;
     try {
         const user = await User.findById(id)
         if (!user) {
@@ -20,7 +20,7 @@ router.put("/assignadmin/:id", adminStatus, async(req, res) => {
         await user.save();
         return res.sendStatus(200);
     } catch (error) {
-        res.sendStatus(500);
+        return res.sendStatus(500);
     }
 })
 
